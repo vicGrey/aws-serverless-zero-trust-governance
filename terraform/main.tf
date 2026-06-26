@@ -58,4 +58,9 @@ module "lambda" {
   api_gateway_execution_arn   = module.api_gateway.execution_arn
 }
 
+module "config" {
+  source = "./modules/config"
+
+  aws_region = var.aws_region
+}
 
