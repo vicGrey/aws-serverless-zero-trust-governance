@@ -10,6 +10,29 @@ deny[msg] {
     msg := sprintf("API Gateway stage '%s' missing CloudWatch access_log_settings", [resource.name])
 }
 
+# Enforce that every API Gateway stage has a corresponding method settings resource for execution logging
+deny[msg] {
+    resource := input.resource_changes[_]
+    resource.type == "aws_api_gateway_stage"
+    
+    stage_name := resource.change.after.stage_name
+    
+    # Check if a method settings resource exists for this stage
+    not method_settings_configured(stage_name)
+    
+    msg := sprintf("API Gateway stage '%s' is missing aws_api_gateway_method_settings configuration for execution logging", [resource.name])
+}
+
+method_settings_configured(stage) {
+    resource := input.resource_changes[_]
+    resource.type == "aws_api_gateway_method_settings"
+    
+    resource.change.after.stage_name == stage
+    
+    settings := resource.change.after.settings[_]
+    settings.logging_level != "OFF"
+}
+
 # Deny Lambda functions without active X-Ray tracing
 deny[msg] {
     resource := input.resource_changes[_]
