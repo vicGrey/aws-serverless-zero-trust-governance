@@ -174,7 +174,10 @@ resource "aws_cloudwatch_log_group" "api_gateway" {
   retention_in_days = 7
 }
 
-# Output the execution ARN for Lambda permission
-output "execution_arn" {
-  value = aws_api_gateway_rest_api.main.execution_arn
+resource "aws_lambda_permission" "api_gateway" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = var.lambda_function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }

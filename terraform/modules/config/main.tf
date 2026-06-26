@@ -4,23 +4,8 @@ resource "aws_config_configuration_recorder" "main" {
   role_arn = aws_iam_role.config.arn
 
   recording_group {
-    all_supported                 = true
-    record_global_resource_types = true
+    all_supported = true
   }
-}
-
-resource "aws_config_delivery_channel" "main" {
-  name           = "${var.project_name}-delivery-channel"
-  s3_bucket_name = aws_s3_bucket.config.id
-
-  depends_on = [aws_config_configuration_recorder.main]
-}
-
-resource "aws_config_configuration_recorder_status" "main" {
-  name       = aws_config_configuration_recorder.main.name
-  is_enabled = true
-
-  depends_on = [aws_config_delivery_channel.main]
 }
 
 # IAM role for AWS Config
@@ -68,6 +53,53 @@ resource "aws_s3_bucket_public_access_block" "config" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "config" {
+  bucket = aws_s3_bucket.config.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AWSConfigBucketPermissions"
+        Effect = "Allow"
+        Principal = {
+          Service = "config.amazonaws.com"
+        }
+        Action   = "s3:GetBucketAcl"
+        Resource = aws_s3_bucket.config.arn
+      },
+      {
+        Sid    = "AWSConfigBucketDelivery"
+        Effect = "Allow"
+        Principal = {
+          Service = "config.amazonaws.com"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.config.arn}/*"
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_config_delivery_channel" "main" {
+  name           = "${var.project_name}-delivery-channel"
+  s3_bucket_name = aws_s3_bucket.config.id
+
+  depends_on = [aws_s3_bucket_policy.config, aws_config_configuration_recorder.main]
+}
+
+resource "aws_config_configuration_recorder_status" "main" {
+  name       = aws_config_configuration_recorder.main.name
+  is_enabled = true
+
+  depends_on = [aws_config_delivery_channel.main]
 }
 
 # Managed Rules — aligned with the four misconfiguration scenarios
@@ -124,14 +156,12 @@ resource "aws_config_config_rule" "cloudwatch_log_group_encrypted" {
   depends_on = [aws_config_configuration_recorder.main]
 }
 
-# Enable AWS Security Hub
-resource "aws_securityhub_account" "main" {
-  enable_default_standards = true
-}
+# Security Hub — commented out due to subscription requirement
+# resource "aws_securityhub_account" "main" {
+#   enable_default_standards = true
+# }
 
-# Subscribe AWS Config findings to Security Hub
-resource "aws_securityhub_product_subscription" "config" {
-  product_arn = "arn:aws:securityhub:${var.aws_region}::product/aws/config"
-
-  depends_on = [aws_securityhub_account.main]
-}
+# resource "aws_securityhub_product_subscription" "config" {
+#   product_arn = "arn:aws:securityhub:${var.aws_region}::product/aws/config"
+#   depends_on  = [aws_securityhub_account.main]
+# }

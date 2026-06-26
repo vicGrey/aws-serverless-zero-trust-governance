@@ -30,12 +30,3 @@ resource "aws_lambda_function" "transaction_api" {
     Name = "Transaction API Lambda"
   }
 }
-
-# Lambda permission for API Gateway to invoke
-resource "aws_lambda_permission" "api_gateway" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.transaction_api.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${var.api_gateway_execution_arn}/*/*"
-}

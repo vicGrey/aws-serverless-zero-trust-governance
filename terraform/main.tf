@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -55,7 +59,6 @@ module "lambda" {
   transactions_table_arn      = module.dynamodb.transactions_table_arn
   transactions_table_name     = module.dynamodb.transactions_table_name
   lambda_execution_role_arn   = module.iam.lambda_execution_role_arn
-  api_gateway_execution_arn   = module.api_gateway.execution_arn
 }
 
 module "config" {
