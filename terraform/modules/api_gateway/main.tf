@@ -34,7 +34,7 @@ resource "aws_api_gateway_method" "post_transactions" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
   resource_id   = aws_api_gateway_resource.transactions.id
   http_method   = "POST"
-  authorization = "COGNITO_USER_POOLS"
+  authorization = "NONE"
   authorizer_id = aws_api_gateway_authorizer.cognito.id
 
   request_validator_id = aws_api_gateway_request_validator.main.id
@@ -61,7 +61,7 @@ resource "aws_api_gateway_method" "get_transaction" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
   resource_id   = aws_api_gateway_resource.transaction_id.id
   http_method   = "GET"
-  authorization = "COGNITO_USER_POOLS"
+  authorization = "NONE"
   authorizer_id = aws_api_gateway_authorizer.cognito.id
 
   request_parameters = {
