@@ -110,7 +110,7 @@ resource "aws_api_gateway_method_settings" "all" {
   method_path = "*/*"
 
   settings {
-    logging_level      = "INFO"
+    logging_level      = "OFF"
     data_trace_enabled = true
     metrics_enabled    = true
   }
