@@ -3,6 +3,16 @@ package main
 # Define the resource types that contain IAM policies
 iam_policy_resources := {"aws_iam_role_policy", "aws_iam_policy"}
 
+# Helper to check if a field contains a wildcard (supports both single strings and lists)
+has_wildcard(field) {
+    is_string(field)
+    field == "*"
+}
+has_wildcard(field) {
+    is_array(field)
+    field[_] == "*"
+}
+
 # Deny any IAM policy statement with wildcard (*) actions
 deny[msg] {
     resource := input.resource_changes[_]
@@ -10,8 +20,7 @@ deny[msg] {
     
     policy := json.unmarshal(resource.change.after.policy)
     statement := policy.Statement[_]
-    action := statement.Action[_]
-    action == "*"
+    has_wildcard(statement.Action)
     
     msg := sprintf("IAM policy '%s' contains wildcard (*) action — violates least privilege", [resource.name])
 }
@@ -23,8 +32,7 @@ deny[msg] {
     
     policy := json.unmarshal(resource.change.after.policy)
     statement := policy.Statement[_]
-    resource_field := statement.Resource[_]
-    resource_field == "*"
+    has_wildcard(statement.Resource)
     
     msg := sprintf("IAM policy '%s' contains wildcard (*) resource — violates least privilege", [resource.name])
 }
