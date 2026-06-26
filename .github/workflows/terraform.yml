@@ -63,7 +63,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         working-directory: ./terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -detailed-exitcode || exit_code=$? && if [ "$exit_code" -eq 3 ]; then exit 0; elif [ "$exit_code" -eq 1 ]; then exit 1; else exit 0; fi
 
       - name: Convert Plan to JSON
         id: plan-json
@@ -75,7 +75,6 @@ jobs:
         working-directory: ./terraform
         run: |
           conftest test tfplan.json --policy ./policies/ --all-namespaces
-        continue-on-error: false
 
       - name: Upload Plan Artifact
         if: github.event_name == 'pull_request'
@@ -88,7 +87,7 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: terraform-plan-and-validate
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.terraform-plan-and-validate.result == 'success'
     permissions:
       contents: read
       id-token: write
