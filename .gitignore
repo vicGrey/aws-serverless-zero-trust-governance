@@ -1,3 +1,11 @@
 venv/
 __pycache__/
 *.pyc
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.zip
+crash.log
+override.tf
+override.tf.json
