@@ -186,6 +186,10 @@ resource "aws_lambda_function" "config_auth_validator" {
   filename         = data.archive_file.config_lambda_zip.output_path
   source_code_hash = data.archive_file.config_lambda_zip.output_base64sha256
   timeout          = 60
+
+  tracing_config {
+    mode = "Active"
+  }
 }
 
 # Grant permission to Config service to invoke this Lambda
