@@ -45,6 +45,10 @@ module "api_gateway" {
   cognito_user_pool_client_id = module.cognito.user_pool_client_id
 }
 
+module "s3" {
+  source = "./modules/s3"
+}
+
 module "lambda" {
   source = "./modules/lambda"
 
