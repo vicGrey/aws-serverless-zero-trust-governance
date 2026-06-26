@@ -36,14 +36,6 @@ module "iam" {
   cognito_user_pool_arn  = module.cognito.user_pool_arn
 }
 
-module "lambda" {
-  source = "./modules/lambda"
-
-  transactions_table_arn      = module.dynamodb.transactions_table_arn
-  transactions_table_name     = module.dynamodb.transactions_table_name
-  lambda_execution_role_arn   = module.iam.lambda_execution_role_arn
-}
-
 module "api_gateway" {
   source = "./modules/api_gateway"
 
@@ -52,3 +44,14 @@ module "api_gateway" {
   cognito_user_pool_arn       = module.cognito.user_pool_arn
   cognito_user_pool_client_id = module.cognito.user_pool_client_id
 }
+
+module "lambda" {
+  source = "./modules/lambda"
+
+  transactions_table_arn      = module.dynamodb.transactions_table_arn
+  transactions_table_name     = module.dynamodb.transactions_table_name
+  lambda_execution_role_arn   = module.iam.lambda_execution_role_arn
+  api_gateway_execution_arn   = module.api_gateway.execution_arn
+}
+
+
