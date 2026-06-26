@@ -128,9 +128,94 @@ resource "aws_config_config_rule" "s3_bucket_public_read_prohibited" {
   depends_on = [aws_config_configuration_recorder.main]
 }
 
-# 3. API Gateway: Detect unauthenticated endpoints
+# Data source to package the custom rule Lambda
+data "archive_file" "config_lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/custom_rule_lambda/lambda_function.py"
+  output_path = "${path.module}/custom_rule_lambda.zip"
+}
+
+# IAM role for custom Config rule Lambda
+resource "aws_iam_role" "config_lambda_role" {
+  name = "${var.project_name}-config-lambda-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "config_lambda_basic" {
+  role       = aws_iam_role.config_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy" "config_lambda_policy" {
+  name = "config-eval-policy"
+  role = aws_iam_role.config_lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "config:PutEvaluations",
+          "apigateway:GET"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Lambda function for custom Config rule evaluation
+resource "aws_lambda_function" "config_auth_validator" {
+  function_name    = "${var.project_name}-config-auth-validator"
+  role             = aws_iam_role.config_lambda_role.arn
+  handler          = "lambda_function.lambda_handler"
+  runtime          = "python3.12"
+  filename         = data.archive_file.config_lambda_zip.output_path
+  source_code_hash = data.archive_file.config_lambda_zip.output_base64sha256
+  timeout          = 60
+}
+
+# Grant permission to Config service to invoke this Lambda
+resource "aws_lambda_permission" "config_auth_validator" {
+  statement_id  = "AllowExecutionFromConfig"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.config_auth_validator.function_name
+  principal     = "config.amazonaws.com"
+}
+
+# 3. API Gateway: Detect unauthenticated endpoints (Custom Rule)
+resource "aws_config_config_rule" "api_gw_auth_check" {
+  name        = "api-gw-auth-check"
+  description = "Verifies that API Gateway endpoints enforce Cognito authentication."
+
+  source {
+    owner             = "CUSTOM_LAMBDA"
+    source_identifier = aws_lambda_function.config_auth_validator.arn
+    source_detail {
+      message_type = "ConfigurationItemChangeNotification"
+    }
+  }
+
+  depends_on = [aws_config_configuration_recorder.main, aws_lambda_permission.config_auth_validator]
+}
+
+# 4. API Gateway & Lambda: Detect disabled execution logging (Scenario 4)
 resource "aws_config_config_rule" "api_gw_execution_logging_enabled" {
-  name = "api-gw-execution-logging-enabled"
+  name        = "api-gw-execution-logging-enabled"
+  description = "Verifies that execution logging is enabled for API Gateway stages."
 
   source {
     owner             = "AWS"
@@ -140,18 +225,6 @@ resource "aws_config_config_rule" "api_gw_execution_logging_enabled" {
   input_parameters = jsonencode({
     loggingLevel = "INFO"
   })
-
-  depends_on = [aws_config_configuration_recorder.main]
-}
-
-# 4. CloudWatch: Detect disabled logging
-resource "aws_config_config_rule" "cloudwatch_log_group_encrypted" {
-  name = "cloudwatch-log-group-encrypted"
-
-  source {
-    owner             = "AWS"
-    source_identifier = "CLOUDWATCH_LOG_GROUP_ENCRYPTED"
-  }
 
   depends_on = [aws_config_configuration_recorder.main]
 }

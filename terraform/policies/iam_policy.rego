@@ -1,9 +1,12 @@
 package main
 
+# Define the resource types that contain IAM policies
+iam_policy_resources := {"aws_iam_role_policy", "aws_iam_policy"}
+
 # Deny any IAM policy statement with wildcard (*) actions
 deny[msg] {
     resource := input.resource_changes[_]
-    resource.type == "aws_iam_role_policy"
+    iam_policy_resources[resource.type]
     
     policy := json.unmarshal(resource.change.after.policy)
     statement := policy.Statement[_]
@@ -16,7 +19,7 @@ deny[msg] {
 # Deny any IAM policy statement with wildcard (*) on resources
 deny[msg] {
     resource := input.resource_changes[_]
-    resource.type == "aws_iam_role_policy"
+    iam_policy_resources[resource.type]
     
     policy := json.unmarshal(resource.change.after.policy)
     statement := policy.Statement[_]
