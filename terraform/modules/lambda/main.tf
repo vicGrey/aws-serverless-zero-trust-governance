@@ -6,11 +6,11 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "transaction_api" {
-  function_name = "${var.project_name}-transaction-api"
-  role          = var.lambda_execution_role_arn
-  handler       = "app.lambda_handler"
-  runtime       = "python3.12"
-  filename      = data.archive_file.lambda_zip.output_path
+  function_name    = "${var.project_name}-transaction-api"
+  role             = var.lambda_execution_role_arn
+  handler          = "app.lambda_handler"
+  runtime          = "python3.12"
+  filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   environment {

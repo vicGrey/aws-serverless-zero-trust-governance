@@ -56,9 +56,9 @@ module "s3" {
 module "lambda" {
   source = "./modules/lambda"
 
-  transactions_table_arn      = module.dynamodb.transactions_table_arn
-  transactions_table_name     = module.dynamodb.transactions_table_name
-  lambda_execution_role_arn   = module.iam.lambda_execution_role_arn
+  transactions_table_arn    = module.dynamodb.transactions_table_arn
+  transactions_table_name   = module.dynamodb.transactions_table_name
+  lambda_execution_role_arn = module.iam.lambda_execution_role_arn
 }
 
 module "config" {
