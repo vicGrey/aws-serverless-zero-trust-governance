@@ -18,4 +18,4 @@ deny[msg] {
     resource.change.after.authorization == "AWS_IAM"
     
     msg := sprintf("API Gateway method '%s' uses AWS_IAM instead of COGNITO_USER_POOLS", [resource.name])
-}
+}   
