@@ -181,8 +181,7 @@ There is a failure mode where the check passes because it cannot read the policy
 ├── 🏗️  terraform/                # Infrastructure definitions
 ├── 📜  policies/                 # Rego policies evaluated by Conftest
 ├── ⚡  lambda/transaction_api/   # Application code
-├── 🤖  .github/workflows/        # CI/CD pipeline
-└── 🗒️  scratch/                  # Notes and working files
+└── 🤖  .github/workflows/        # CI/CD pipeline
 ```
 
 ---
@@ -238,7 +237,7 @@ conftest test tfplan.json --policy ../policies/ --all-namespaces
   <tr>
     <td>
       <b>Victor Okoroafor</b><br/>
-      AWS Certified Cloud Engineer | DevSecOps &amp; Cloud Security<br/><br/>
+      Cloud Security &amp; DevSecOps Engineer<br/><br/>
       <a href="https://linkedin.com/in/victor-okoroafor-cloud"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
       <a href="mailto:victor.okoroafor.cloud@gmail.com"><img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" /></a>
       <a href="https://github.com/vicGrey"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
