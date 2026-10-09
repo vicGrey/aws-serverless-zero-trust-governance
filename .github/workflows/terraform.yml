@@ -74,7 +74,7 @@ jobs:
         id: opa
         working-directory: ./terraform
         run: |
-          conftest test tfplan.json --policy ./policies/ --all-namespaces
+          conftest test tfplan.json --policy ../policies/ --all-namespaces
 
       - name: Upload Plan Artifact
         if: github.event_name == 'pull_request'

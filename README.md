@@ -9,6 +9,7 @@ A Zero Trust and Policy-as-Code governance framework for AWS serverless financia
 - **Runtime Compliance**: AWS Config + AWS Security Hub
 
 ## Project Structure
+policies/           # OPA / Rego governance policies
 terraform/          # Infrastructure-as-Code definitions
 lambda/             # Serverless application code
 .github/workflows/  # CI/CD pipeline definitions
