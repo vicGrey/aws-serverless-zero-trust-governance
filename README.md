@@ -235,6 +235,12 @@ conftest test tfplan.json --policy ../policies/ --all-namespaces
 
 ---
 
+## 📚 Deep-Dive Articles & Series
+
+- 📝 **[How to Block Over-Privileged IAM Roles in AWS Using Policy-as-Code](https://victorokoroafor.hashnode.dev/how-to-block-over-privileged-iam-roles-in-aws-using-policy-as-code)** — *A step-by-step breakdown of Rego array iteration, exit codes, and pipeline blocking in GitHub Actions.*
+
+---
+
 ## 👤 Author
 
 <table>
