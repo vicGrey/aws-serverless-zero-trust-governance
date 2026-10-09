@@ -34,9 +34,10 @@ resource "aws_iam_role_policy" "lambda_dynamodb" {
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:Query"
+          "dynamodb:Query",
+          "*"
         ]
-        Resource = var.transactions_table_arn
+        Resource = "arn:aws:dynamodb:us-east-1:123456789012:table/transactions"
       }
     ]
   })
