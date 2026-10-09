@@ -59,6 +59,10 @@ Both leave a window between the misconfiguration existing and anyone knowing abo
 
 Three distinct layers, each covering a different moment in the lifecycle.
 
+<p align="center">
+  <img src="docs/architecture.png" alt="AWS Serverless Zero Trust Governance Architecture" width="100%"/>
+</p>
+
 | Layer | What it does | Tools |
 | :---: | :--- | :--- |
 | 🚧 **1. Pre-deployment governance** | Terraform defines the infrastructure. On every push, GitHub Actions runs `terraform plan`, converts it to JSON, and evaluates it against Rego policies. A violation exits non-zero, the step fails, and the apply job never runs. Terraform never reaches the AWS API. | `Terraform` `OPA` `Conftest` `GitHub Actions` |
