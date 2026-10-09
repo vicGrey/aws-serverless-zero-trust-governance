@@ -237,7 +237,9 @@ conftest test tfplan.json --policy ../policies/ --all-namespaces
 
 ## 📚 Deep-Dive Articles & Series
 
-- 📝 **[How to Block Over-Privileged IAM Roles in AWS Using Policy-as-Code](https://victorokoroafor.hashnode.dev/how-to-block-over-privileged-iam-roles-in-aws-using-policy-as-code)** — *A step-by-step breakdown of Rego array iteration, exit codes, and pipeline blocking in GitHub Actions.*
+- 📝 **How to Block Over-Privileged IAM Roles in AWS Using Policy-as-Code**  
+  *A step-by-step breakdown of Rego array iteration, exit codes, and pipeline blocking in GitHub Actions.*  
+  📖 **Read on**: [Hashnode](https://victorokoroafor.hashnode.dev/how-to-block-over-privileged-iam-roles-in-aws-using-policy-as-code) • [DEV.to](https://dev.to/okoroaforvic/how-to-block-over-privileged-iam-roles-in-aws-using-policy-as-code-1k8)
 
 ---
 
@@ -249,6 +251,8 @@ conftest test tfplan.json --policy ../policies/ --all-namespaces
       <b>Victor Okoroafor</b><br/>
       Cloud Security &amp; DevSecOps Engineer<br/><br/>
       <a href="https://linkedin.com/in/victor-okoroafor-cloud"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
+      <a href="https://victorokoroafor.hashnode.dev"><img src="https://img.shields.io/badge/Hashnode-2962FF?style=for-the-badge&logo=hashnode&logoColor=white" /></a>
+      <a href="https://dev.to/okoroaforvic"><img src="https://img.shields.io/badge/DEV.to-0A0A0A?style=for-the-badge&logo=dev.to&logoColor=white" /></a>
       <a href="mailto:victor.okoroafor.cloud@gmail.com"><img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" /></a>
       <a href="https://github.com/vicGrey"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
     </td>
